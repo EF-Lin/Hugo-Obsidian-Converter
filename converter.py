@@ -8,7 +8,7 @@ class Convert:
     """
     obsidian: list
     pic_path: str = ""
-    allow_chars = ['>', '!', '[', '#', '-', '{', '(', '`', '-', '\n']
+    allow_chars = ['>', '!', '[', '#', '-', '{', '(', '-', '\n']
 
     def __post_init__(self):
         self.__re_str = ""
@@ -21,7 +21,8 @@ class Convert:
             self.__sep() if is_sep else 0
             self.__pic() if is_pic else 0
             self.__adm() if is_adm else 0
-            self.obsidian += '\n' if self.obsidian[-1] != '\n' else ""
+            if self.obsidian[-1] != '\n':
+                self.obsidian += '\n'
             for i in self.obsidian:
                 self.__re_str += i
             return self.__re_str
@@ -35,9 +36,16 @@ class Convert:
         self.obsidian.pop(0) if self.obsidian[0] == '\n' else 0
 
     def __sep(self):
-        for i in range(len(self.obsidian)):
-            if self.obsidian[i][0] not in self.allow_chars:
+        i = 0
+        jump = -1
+        while i < len(self.obsidian):
+            j = self.obsidian[i].find("```")
+            jump = -jump if j != -1 else jump
+            if self.obsidian[i][0] not in self.allow_chars and jump < 0:
                 self.obsidian[i] += '\n'
+            elif j != -1 and jump > 0:
+                self.obsidian[i] = self.obsidian[i].replace('\n', "{linenos=true}\n")
+            i += 1
 
     def __pic(self):
         for n in range(len(self.obsidian)):
