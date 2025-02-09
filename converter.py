@@ -21,6 +21,7 @@ class Convert:
             self.__sep() if is_sep else 0
             self.__pic() if is_pic else 0
             self.__adm() if is_adm else 0
+            self.obsidian += '\n' if self.obsidian[-1] != '\n' else ""
             for i in self.obsidian:
                 self.__re_str += i
             return self.__re_str
@@ -46,7 +47,7 @@ class Convert:
                 file = self.obsidian[n][i + 3:j]
                 title = self.obsidian[n][i + 3:self.obsidian[n].find('.')]
                 self.obsidian[n] = self.obsidian[n].replace(self.obsidian[n][i:j + 2],
-                                                            f"![{title}]({self.pic_path}/{file})",
+                                                            f"![{title}]({self.pic_path}/{file} \"{title}\")",
                                                             1)
         self.__del_first_blank_line()
 
