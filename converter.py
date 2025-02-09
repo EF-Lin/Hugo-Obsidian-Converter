@@ -7,12 +7,12 @@ class Convert:
     This object will receive an obsidian-md.readlines list and return a converted hugo-md string.
     """
     obsidian: list
-    pic_path: str
+    pic_path: str = ""
     allow_chars = ['>', '!', '[', '#', '-', '{', '(', '`', '-', '\n']
 
     def __post_init__(self):
         self.__re_str = ""
-        if self.pic_path[-1] == '/' or '\\' and len(self.pic_path) > 3:
+        if self.pic_path != "" and self.pic_path[-1] in ['/', '\\'] and len(self.pic_path) > 3:
             self.pic_path = self.pic_path[0:-1]
 
     def convert(self, is_delcon=True, is_sep=True, is_pic = True, is_adm = True):

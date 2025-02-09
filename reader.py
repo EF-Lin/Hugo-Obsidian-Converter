@@ -21,10 +21,15 @@ class Glasses:
         if self.name != "":
             if self.name.find('.') == -1:
                 self.name += self.file_type
-        elif self.name_num == -1:
-            self.name = self.read_path[self.read_path.find('/', -1)+1:]
         else:
-            self.name = f"{self.read_path[self.read_path.find('/', -1)+1:self.name_num + 1]}{self.file_type}"
+            i = 0
+            for n in range(len(self.read_path)):
+                if self.read_path[n] in ['/', '\\']:
+                    i = n
+            if self.name_num == -1:
+                self.name = self.read_path[i+1:]
+            else:
+                self.name = f"{self.read_path[i+1:i+self.name_num+1]}{self.file_type}"
 
     @staticmethod
     def path_condition(path: str, default: str) -> str:
@@ -38,10 +43,10 @@ class Glasses:
         return os.path.normpath(f"{default}{path}")
 
     def read_file(self) -> list:
-        return open(self.read_path).readlines()
+        return open(self.read_path, encoding="utf8").readlines()
 
     def write_file(self, data: str):
-        with open(os.path.normpath(f"{self.write_path}/{self.name}"), "w+") as f:
+        with open(os.path.normpath(f"{self.write_path}/{self.name}"), "w+", encoding="utf8") as f:
             f.write(data)
             os.startfile(self.write_path)
 
