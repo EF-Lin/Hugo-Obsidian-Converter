@@ -11,29 +11,53 @@ class Convert:
     allow_chars = ['>', '!', '[', '#', '-', '{', '(', '-', '\n']
 
     def __post_init__(self):
-        self.__re_str = ""
+        self.obsidian_str = ""
         if self.pic_path != "" and self.pic_path[-1] in ['/', '\\'] and len(self.pic_path) > 3:
             self.pic_path = self.pic_path[0:-1]
 
-    def convert(self, is_delcon=True, is_sep=True, is_pic = True, is_adm = True):
+    def convert(self, is_delcon=True, is_sep=True, is_pic = True, is_adm = True, is_highlight=True) -> str:
         try:
+            self.obsidian = self.__del_first_blank_line(self.obsidian)
             self.__del_content() if is_delcon else 0
             self.__sep() if is_sep else 0
             self.__pic() if is_pic else 0
             self.__adm() if is_adm else 0
-            if self.obsidian[-1] != '\n':
-                self.obsidian += '\n'
-            for i in self.obsidian:
-                self.__re_str += i
-            return self.__re_str
+            self.obsidian = self.__del_first_blank_line(self.obsidian)
+
+            self.obsidian_str = self.__list2str(self.obsidian)
+
+            self.__highlight() if is_highlight else 0
+
+            self.obsidian_str = self.__check_str_endl(self.obsidian_str)
+
+            return self.obsidian_str
         except Exception as ex:
             return str(ex)
 
-    def test(self):
+    def _test(self):
         self.__del_content()
 
-    def __del_first_blank_line(self):
-        self.obsidian.pop(0) if self.obsidian[0] == '\n' else 0
+    @staticmethod
+    def __check_str_endl(s: str):
+        if s[-1] != '\n':
+            return s + '\n'
+        else:
+            while s[-2] == '\n' and s[-1] == '\n':
+                s = s[:-1]
+            return s
+
+    @staticmethod
+    def __del_first_blank_line(data: list):
+        while data[0] == '\n':
+            data.pop(0)
+        return data
+
+    @staticmethod
+    def __list2str(data: list):
+        s = ""
+        for i in data:
+            s += i
+        return s
 
     def __sep(self):
         i = 0
@@ -57,7 +81,6 @@ class Convert:
                 self.obsidian[n] = self.obsidian[n].replace(self.obsidian[n][i:j + 2],
                                                             f"![{title}]({self.pic_path}/{file} \"{title}\")",
                                                             1)
-        self.__del_first_blank_line()
 
     def __adm(self):
         adm_type = {
@@ -77,17 +100,20 @@ class Convert:
                 title = new_kind.capitalize()
                 self.obsidian[n] = f"{{{{< admonition type=\"{kind}\" title=\"{title}\" >}}}}\n"
                 j = n+1
-                while self.obsidian[j][0] == '>':
+                while self.obsidian[j].find('>') >= 0:
+                    self.obsidian[j] = self.obsidian[j].replace('> ', '', 1)
                     self.obsidian[j] = self.obsidian[j].replace('>', '', 1)
-                    if self.obsidian[j][0] == ' ':
-                        self.obsidian[j] = self.obsidian[j][1:]
-                    if j < len(self.obsidian) - 1:
-                        j += 1
-                    else:
+                    self.obsidian[j] = self.__check_str_endl(self.obsidian[j])
+                    j += 1
+                    if j > (len(self.obsidian) - 1):
                         break
-                self.obsidian.insert(j+1, "{{< /admonition >}}")
+                self.obsidian.insert(j, "{{< /admonition >}}\n")
             n += 1
-        self.__del_first_blank_line()
+
+    def __highlight(self):
+        flag = 1
+        while self.obsidian_str.find("==") >= 0:
+            self.obsidian_str = self.obsidian_str.replace("==", "<mark>", 1) if flag > 0 else self.obsidian_str.replace("==", "</mark>", 1)
 
     def __del_content(self):
         n = 0
@@ -102,12 +128,10 @@ class Convert:
                     else:
                         self.obsidian.pop(n)
             n += 1
-        self.__del_first_blank_line()
 
 
 if __name__ == '__main__':
     f = open("test/t1.md").readlines()
     c = Convert(f, "C:/")
-    # p = c.convert(is_sep=True, is_pic=True, is_adm=True)
-    c.test()
-    print(c.obsidian)
+    p = c.convert()
+    print(p)
