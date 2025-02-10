@@ -52,4 +52,4 @@ class Glasses:
 
 
 if __name__ == "__main__":
-    g = Glasses(read_path="test/t1.md", write_path="test/", name="ttt")
+    g = Glasses(read_path="../test/t1.md", write_path="../test/", name="ttt")

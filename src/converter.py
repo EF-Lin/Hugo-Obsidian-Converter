@@ -131,7 +131,7 @@ class Convert:
 
 
 if __name__ == '__main__':
-    f = open("test/t1.md").readlines()
+    f = open("../test/t1.md").readlines()
     c = Convert(f, "C:/")
     p = c.convert()
     print(p)

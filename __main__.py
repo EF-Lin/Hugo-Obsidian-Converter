@@ -1,6 +1,6 @@
 import argparse
-from converter import Convert
-from reader import Glasses
+from src.converter import Convert
+from src.reader import Glasses
 
 parser = argparse.ArgumentParser()
 parser.add_argument("read_path")
