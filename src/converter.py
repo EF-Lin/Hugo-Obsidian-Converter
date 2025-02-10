@@ -62,21 +62,28 @@ class Convert:
                                                             1)
 
     def __adm(self):
+        """
         adm_type = {
             "note": "note",
-            "info": "note",
+            "info": "info",
             "hint": "tip",
             "tip": "tip",
             "caution": "warning",
-            "warning": "danger"
+            "danger": "danger",
+            "bug": "bug",
+            "success": "success",
+            "question": "question",
+            "failure": "failure",
+            "example": "example"
         }
+        """
         n = 0
         while n < len(self.obsidian) - 1:
             i = self.obsidian[n].find("> [!")*self.obsidian[n].find(">[!")
             if i <= 0:
                 kind = self.obsidian[n][self.obsidian[n].find('!') + 1: self.obsidian[n].find(']')].lower()
-                new_kind = adm_type.get(kind, "note")
-                title = new_kind.capitalize()
+                kind = "tip" if kind == "hint" else kind
+                title = kind.capitalize()
                 self.obsidian[n] = f"{{{{< admonition type=\"{kind}\" title=\"{title}\" >}}}}\n"
                 j = n+1
                 while self.obsidian[j].find('>') >= 0:
