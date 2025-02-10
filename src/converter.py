@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from src.endl import *
 
 
 @dataclass
@@ -17,18 +18,18 @@ class Convert:
 
     def convert(self, is_delcon=True, is_sep=True, is_pic = True, is_adm = True, is_highlight=True) -> str:
         try:
-            self.obsidian = self.__del_first_blank_line(self.obsidian)
+            self.obsidian = del_first_blank_line(self.obsidian)
             self.__del_content() if is_delcon else 0
             self.__sep() if is_sep else 0
             self.__pic() if is_pic else 0
             self.__adm() if is_adm else 0
-            self.obsidian = self.__del_first_blank_line(self.obsidian)
+            self.obsidian = del_first_blank_line(self.obsidian)
 
-            self.obsidian_str = self.__list2str(self.obsidian)
+            self.obsidian_str = list2str(self.obsidian)
 
             self.__highlight() if is_highlight else 0
 
-            self.obsidian_str = self.__check_str_endl(self.obsidian_str)
+            self.obsidian_str = str_endl(self.obsidian_str)
 
             return self.obsidian_str
         except Exception as ex:
@@ -36,28 +37,6 @@ class Convert:
 
     def _test(self):
         self.__del_content()
-
-    @staticmethod
-    def __check_str_endl(s: str):
-        if s[-1] != '\n':
-            return s + '\n'
-        else:
-            while s[-2] == '\n' and s[-1] == '\n':
-                s = s[:-1]
-            return s
-
-    @staticmethod
-    def __del_first_blank_line(data: list):
-        while data[0] == '\n':
-            data.pop(0)
-        return data
-
-    @staticmethod
-    def __list2str(data: list):
-        s = ""
-        for i in data:
-            s += i
-        return s
 
     def __sep(self):
         i = 0
@@ -103,7 +82,7 @@ class Convert:
                 while self.obsidian[j].find('>') >= 0:
                     self.obsidian[j] = self.obsidian[j].replace('> ', '', 1)
                     self.obsidian[j] = self.obsidian[j].replace('>', '', 1)
-                    self.obsidian[j] = self.__check_str_endl(self.obsidian[j])
+                    self.obsidian[j] = str_endl(self.obsidian[j])
                     j += 1
                     if j > (len(self.obsidian) - 1):
                         break

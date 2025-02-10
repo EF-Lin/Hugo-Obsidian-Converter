@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 import os
+import datetime
 
 
 @dataclass
@@ -11,6 +12,7 @@ class Glasses:
     write_path: str
     name: str = ""
     name_num: int = -1
+    sep_name: bool = False
     file_type: str = ".md"
     default_read_path: str = ""
     default_write_path: str = ""
@@ -30,6 +32,9 @@ class Glasses:
                 self.name = self.read_path[i+1:]
             else:
                 self.name = f"{self.read_path[i+1:i+self.name_num+1]}{self.file_type}"
+
+        self.date = self.name[:self.name.find('.')] if self.sep_name else str(datetime.date.today())
+        self.title = self.read_path[len(self.read_path) - self.read_path[::-1].find('-'):len(self.read_path) - 1 - self.read_path[::-1].find('.')] if self.sep_name else "New_file"
 
     @staticmethod
     def path_condition(path: str, default: str) -> str:
@@ -52,4 +57,5 @@ class Glasses:
 
 
 if __name__ == "__main__":
-    g = Glasses(read_path="../test/t1.md", write_path="../test/", name="ttt")
+    g = Glasses(read_path="./test/2024-03-30-uuu.md", write_path="./test/", name="ttt", sep_name=True)
+    print(g.date)
