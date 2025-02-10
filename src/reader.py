@@ -51,7 +51,12 @@ class Glasses:
         return open(self.read_path, encoding="utf8").readlines()
 
     def write_file(self, data: str):
-        with open(os.path.normpath(f"{self.write_path}/{self.name}"), "w+", encoding="utf8") as f:
+        path = os.path.normpath(f"{self.write_path}/{self.name}")
+        i = 2
+        while os.path.exists(path):
+            path += f"-{i}"
+            i += 1
+        with open(path, "w+", encoding="utf8") as f:
             f.write(data)
             os.startfile(self.write_path)
 
