@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 import os
 import datetime
+from src.endl import *
 
 
 @dataclass
@@ -54,8 +55,11 @@ class Glasses:
         path = os.path.normpath(f"{self.write_path}/{self.name}")
         i = 2
         while os.path.exists(path):
-            path += f"-{i}"
+            path = path.split('.')
+            path[0] = path[0][:-2] if i > 2 else path[0]
+            path[0] += f"-{i}."
             i += 1
+            path = list2str(path)
         with open(path, "w+", encoding="utf8") as f:
             f.write(data)
             os.startfile(self.write_path)
