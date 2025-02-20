@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from src.endl import *
+from src.endl import str_endl, del_first_blank_line, list2str
 
 
 @dataclass
@@ -86,13 +86,11 @@ class Convert:
                 title = kind.capitalize()
                 self.obsidian[n] = f"{{{{< admonition type=\"{kind}\" title=\"{title}\" >}}}}\n"
                 j = n+1
-                while self.obsidian[j].find('>') >= 0:
+                while self.obsidian[j] != '\n' and j < len(self.obsidian):
                     self.obsidian[j] = self.obsidian[j].replace('> ', '', 1)
                     self.obsidian[j] = self.obsidian[j].replace('>', '', 1)
-                    self.obsidian[j] = str_endl(self.obsidian[j])
+                    self.obsidian[j] = str_endl(self.obsidian[j]) + '\n'
                     j += 1
-                    if j > (len(self.obsidian) - 1):
-                        break
                 self.obsidian.insert(j, "{{< /admonition >}}\n")
             n += 1
 

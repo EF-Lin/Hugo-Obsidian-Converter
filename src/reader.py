@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 import os
 import datetime
-from src.endl import *
+from src.endl import list2str
 
 
 @dataclass
