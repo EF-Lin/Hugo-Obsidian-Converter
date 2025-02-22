@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 import os
 import datetime
-from src.endl import list2str
 
 
 @dataclass
@@ -61,7 +60,7 @@ class Glasses:
             path[0] = path[0][:-2] if i > 2 else path[0]
             path[0] += f"-{i}."
             i += 1
-            path = list2str(path)
+            path = ''.join(path)
         with open(path, "w+", encoding="utf8") as f:
             f.write(data)
             os.startfile(self.write_path)

@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from src.endl import str_endl, del_first_blank_line, list2str
+from src.endl import str_endl, del_first_blank_line
 
 
 @dataclass
@@ -25,7 +25,7 @@ class Convert:
             self.__adm() if is_adm else 0
             self.obsidian = del_first_blank_line(self.obsidian)
 
-            self.obsidian_str = list2str(self.obsidian)
+            self.obsidian_str = ''.join(self.obsidian)
 
             self.__highlight() if is_highlight else 0
 
