@@ -12,7 +12,6 @@ class Convert:
     allow_chars = ['>', '!', '[', '#', '-', '{', '(', '-', '\n']
 
     def __post_init__(self):
-        self.obsidian_str = ""
         if self.pic_path != "" and self.pic_path[-1] in ['/', '\\'] and len(self.pic_path) > 3:
             self.pic_path = self.pic_path[0:-1]
 
@@ -20,25 +19,19 @@ class Convert:
         try:
             self.obsidian = del_first_blank_line(self.obsidian)
             self.__del_content() if is_delcon else 0
-            self.__sep() if is_sep else 0
+            self.__sep(highlight=is_highlight) if is_sep else 0
             self.__pic() if is_pic else 0
             self.__adm() if is_adm else 0
             self.obsidian = del_first_blank_line(self.obsidian)
-
-            self.obsidian_str = ''.join(self.obsidian)
-
-            self.__highlight() if is_highlight else 0
-
-            self.obsidian_str = str_endl(self.obsidian_str)
-
-            return self.obsidian_str
+            # self.__highlight() if is_highlight else 0
+            return str_endl(''.join(self.obsidian))
         except Exception as ex:
             return str(ex)
 
     def _test(self):
         self.__del_content()
 
-    def __sep(self):
+    def __sep(self, highlight: bool):
         i = 0
         jump = -1
         while i < len(self.obsidian):
@@ -46,9 +39,18 @@ class Convert:
             jump = -jump if j != -1 else jump
             if self.obsidian[i][0] not in self.allow_chars and jump < 0:
                 self.obsidian[i] += '\n'
+                self.obsidian[i] = self.__highlight(self.obsidian[i]) if highlight else self.obsidian[i]
+            elif jump < 0:
+                self.obsidian[i] = self.__highlight(self.obsidian[i]) if highlight else self.obsidian[i]
             elif j != -1 and jump > 0:
                 self.obsidian[i] = self.obsidian[i].replace('\n', "{linenos=true}\n")
             i += 1
+
+    @staticmethod
+    def __highlight(s: str) -> str:
+        while s.find("==") >= 0:
+            s = s.replace("==", "<mark>", 1).replace("==", "</mark>", 1)
+        return s
 
     def __pic(self):
         for n in range(len(self.obsidian)):
@@ -94,7 +96,7 @@ class Convert:
                 self.obsidian.insert(j, "{{< /admonition >}}\n")
             n += 1
 
-    def __highlight(self):
+    def __highlight_old(self):
         flag = 1
         while self.obsidian_str.find("==") >= 0:
             self.obsidian_str = self.obsidian_str.replace("==", "<mark>", 1) if flag > 0 else self.obsidian_str.replace("==", "</mark>", 1)
