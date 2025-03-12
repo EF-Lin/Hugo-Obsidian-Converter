@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import re
 from src.endl import str_endl, del_first_blank_line
 
 
@@ -79,19 +80,19 @@ class Convert:
             "example": "example"
         }
         """
+        ignore_chars = ['`', '#']
         n = 0
         while n < len(self.obsidian) - 1:
-            i = self.obsidian[n].find("> [!")*self.obsidian[n].find(">[!")
-            if i <= 0:
-                kind = self.obsidian[n][self.obsidian[n].find('!') + 1: self.obsidian[n].find(']')].lower()
+            # i = self.obsidian[n].find("> [!")*self.obsidian[n].find(">[!")
+            i = re.match(r"\>\[\!.*?\]", self.obsidian[n])
+            if i != None:
+                kind = self.obsidian[n][i.start() + 3: i.end() - 1].lower()
                 kind = "tip" if kind == "hint" else kind
                 title = kind.capitalize()
                 self.obsidian[n] = f"{{{{< admonition type=\"{kind}\" title=\"{title}\" >}}}}\n"
                 j = n+1
-                while self.obsidian[j] != '\n' and j < len(self.obsidian):
-                    self.obsidian[j] = self.obsidian[j].replace('> ', '', 1)
-                    self.obsidian[j] = self.obsidian[j].replace('>', '', 1)
-                    self.obsidian[j] = str_endl(self.obsidian[j]) + '\n'
+                while self.obsidian[j] != '\n' and j < len(self.obsidian) and self.obsidian[j][0] not in ignore_chars:
+                    self.obsidian[j] = str_endl(self.obsidian[j].replace("> ", '', 1).replace('>', '', 1)) + '\n'
                     j += 1
                 self.obsidian.insert(j, "{{< /admonition >}}\n")
             n += 1
