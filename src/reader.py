@@ -28,7 +28,7 @@ class Glasses:
             if self.name_num == -1:
                 self.name = self.read_path[i + 1:]
             else:
-                self.name = f"{self.read_path[i + 1:i + self.name_num + 1]}{self.file_type}"
+                self.name = self.add_filetype(f"{self.read_path[i + 1:i + self.name_num + 1]}")
 
         self.name = self.add_filetype(self.name)
         self.date = self.name[:self.name.find('.')] if self.sep_name else str(datetime.date.today())
@@ -45,7 +45,7 @@ class Glasses:
                 default = default[1:]
         return os.path.normpath(f"{default}{path}")
 
-    def add_filetype(self, path):
+    def add_filetype(self, path: str) -> str:
         path += self.file_type if path.find('.') == -1 else ''
         return path
 

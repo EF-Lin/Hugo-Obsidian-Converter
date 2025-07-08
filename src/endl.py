@@ -1,4 +1,4 @@
-def str_endl(s: str):
+def list_endl(s: str) -> str:
     if s[-1] != '\n':
         return s + '\n'
     else:
@@ -6,7 +6,16 @@ def str_endl(s: str):
             s = s[:-1]
         return s
 
-def del_first_blank_line(data: list):
+def form_str_endl(s: str) -> str:
+    while s[0] == '\n':
+        s = s[1:]
+    while s[-2] == '\n' and s[-1] == '\n':
+        s = s[:-1]
+    if s[-1] != '\n':
+        s += '\n'
+    return s
+
+def del_list_first_endl(data: list) -> list:
     while data[0] == '\n':
         data.pop(0)
     return data

@@ -1,6 +1,7 @@
 import os.path
 from dataclasses import dataclass
-from src.endl import *
+from src.endl import list_endl
+from typing import ClassVar
 
 @dataclass
 class Head:
@@ -10,8 +11,8 @@ class Head:
     main_data: str
     date: str
     title: str
-    default_path: str = "/data/archetypes/"
-    temp: str = "default.md"
+    default_path: ClassVar[str] = "/data/archetypes/"
+    temp: ClassVar[str] = "default.md"
 
     def __post_init__(self):
         self.path = os.path.normpath(f"{os.getcwd()}/Hugo-Obsidian-Converter/{self.default_path}/{self.temp}")
@@ -20,7 +21,7 @@ class Head:
     def add_head(self, is_date=True, is_title=True) -> str:
         self.__rep_date() if is_date else 0
         self.__rep_title() if is_title else 0
-        return str_endl(self.head_data) + self.main_data
+        return list_endl(self.head_data) + self.main_data
 
     def __rep_date(self):
         self.head_data = self.head_data.replace("{{date}}", f"\"{self.date}\"")

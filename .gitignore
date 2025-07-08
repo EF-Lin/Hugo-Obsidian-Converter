@@ -1,1 +1,4 @@
-/test/
+/src/test/
+t.py
+/.idea/
+*.pyc
