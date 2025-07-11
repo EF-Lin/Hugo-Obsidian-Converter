@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 import re
+from rich import print
 from src.endl import form_str_endl
 
 @dataclass
@@ -23,6 +24,8 @@ class Convert:
                 is_highlight=True,
                 is_link=True) -> str:
         try:
+            if self.__scan(self.obsidian) is True:
+                print("[red]WARNING [[ file#title ]] link")
             self.__del_content() if is_delcon else 0
             self.__pic() if is_pic else 0
             self.__link() if is_link else 0
@@ -33,10 +36,12 @@ class Convert:
         except Exception as ex:
             return str(ex)
 
-    def _test(self):
-        self.__del_content()
-        self.__adm()
-        self.__sep_code()
+    def _test(self, *args):
+        print(self.__scan(args[0]))
+
+    @staticmethod
+    def __scan(text: str) -> bool:
+        return True if re.search(r"\[\[.{1,}#", text) != None else False
 
     def __del_content(self):
         self.obsidian = re.sub(r"```table-of-contents.*?```", "", self.obsidian, flags=re.DOTALL)
@@ -84,7 +89,4 @@ class Convert:
 
 
 if __name__ == '__main__':
-    f = open("test/t1.md").readlines()
-    c = Convert(f, "/post")
-    #print(repr(c.obsidian))
-    print(c.convert())
+    pass
