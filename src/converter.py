@@ -50,7 +50,8 @@ class Convert:
         self.obsidian = re.sub(r"!\[\[(.*?)\.(.*?)\]\]", r"![\1](" + self.pic_path + r'/\1.\2 "\1")', self.obsidian)
 
     def __link(self):
-        self.obsidian = re.sub(r"\[\[#*(.*?)\]\]", r"[\1](#\1)", self.obsidian)
+        self.obsidian = re.sub(r"\[\[(.{1,}#.*?)\]\]",r"[\1](link)", self.obsidian)
+        self.obsidian = re.sub(r"\[\[#(.*?)\]\]", r"[\1](#\1)", self.obsidian)
 
     def __adm(self):
         """
@@ -81,6 +82,11 @@ class Convert:
             jump2 = -jump2 if self.obsidian[i+1] == '{' else jump2
             if self.obsidian[i+1] not in self.allow_chars and self.obsidian[i-1] not in self.allow_chars and jump1 < 0 and jump2 < 0:
                 self.obsidian = self.obsidian[:i+1] + '\n' + self.obsidian[i+1:]
+            elif jump1 > 0:
+                jump1 = -jump1
+            else:
+                jump2 = -jump2
+
             i = self.obsidian.find('\n', i+1)
         self.obsidian = re.sub(r"\n```{linenos=true}", r"```", self.obsidian)
 
