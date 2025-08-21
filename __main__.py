@@ -13,11 +13,13 @@ args = parser.parse_args()
 try:
     g = Glasses(read_path=args.read_path, write_path=args.write_path, name_num=10, sep_name=True)
     file = g.read_file()
+
     c = Convert(obsidian=file)
     data = c.convert()
     h = Head(main_data=data, date=g.date, title=g.title)
     data = h.add_head()
     g.write_file(data)
+    print("\n[red]WARNING [[ file#title ]] link" if c.scan(data) is True else "\n")
     print("[green]INFO: convert successful")
 except Exception as ex:
     print(f"[red]ERROR: {ex}")

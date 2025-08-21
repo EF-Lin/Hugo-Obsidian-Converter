@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 import re
-from rich import print
 from src.endl import form_str_endl
 
 @dataclass
@@ -24,8 +23,6 @@ class Convert:
                 is_highlight=True,
                 is_link=True) -> str:
         try:
-            if self.__scan(self.obsidian) is True:
-                print("[red]WARNING [[ file#title ]] link")
             self.__del_content() if is_delcon else 0
             self.__pic() if is_pic else 0
             self.__link() if is_link else 0
@@ -37,12 +34,12 @@ class Convert:
             return str(ex)
 
     def _test(self, *args):
-        print(self.__scan(args[0]))
+        pass
 
     @staticmethod
-    def __scan(text: str) -> bool:
+    def scan(text: str) -> bool:
         # 掃描有無需要注意的文內連結
-        return True if re.search(r"\[\[.{1,}#", text) != None else False
+        return True if re.search(r"\[.{1,}?link#", text) != None else False
 
     def __del_content(self):
         # delete content
@@ -54,7 +51,9 @@ class Convert:
 
     def __link(self):
         # replace link, two formats
-        self.obsidian = re.sub(r"\[\[(.{1,})(#.*?)\]\]",r"[\1\2](link\2)", self.obsidian)
+        # [[file#title]] -> [file#title](link#title)
+        self.obsidian = re.sub(r"\[\[(.{1,}?)(#.*?)\]\]",r"[\1\2](link\2)", self.obsidian)
+        # [[#title]]  -> [title](#title)
         self.obsidian = re.sub(r"\[\[#(.*?)\]\]", r"[\1](#\1)", self.obsidian)
 
     def __adm(self):
