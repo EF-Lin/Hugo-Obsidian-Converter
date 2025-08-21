@@ -9,7 +9,7 @@ class Convert:
     """
     obsidian: list
     pic_path: str = ""
-    allow_chars = ['>', '<', '!', '[', '#', '-', '{', '(', '-', '\n']
+    allow_chars = ['<', '!', '[', '#', '-', '{', '(', '-', '\n']
 
     def __post_init__(self):
         if self.pic_path != "" and self.pic_path[-1] in ['/', '\\'] and len(self.pic_path) > 3:
@@ -87,8 +87,14 @@ class Convert:
             jump1 = -jump1 if self.obsidian[i+1] == '`' else jump1
             # jump if in {}, e.g. admonition
             jump2 = -jump2 if self.obsidian[i+1] == '{' else jump2
+            # sep
             if self.obsidian[i+1] not in self.allow_chars and self.obsidian[i-1] not in self.allow_chars and jump1 < 0 and jump2 < 0:
-                self.obsidian = self.obsidian[:i+1] + '\n' + self.obsidian[i+1:]
+                if self.obsidian[i+1] == '>':
+                    self.obsidian = self.obsidian[:i+1] + ">\n" + self.obsidian[i+1:]
+                    i += 2
+                else:
+                    self.obsidian = self.obsidian[:i+1] + '\n' + self.obsidian[i+1:]
+            # jump
             elif jump1 > 0:
                 jump1 = -jump1
             elif jump2 > 0:
