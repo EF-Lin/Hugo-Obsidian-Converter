@@ -84,7 +84,7 @@ class Convert:
         jump2 = -1
         while i != -1 and i < len(self.obsidian)-1:
             # jump if in ```
-            jump1 = -jump1 if self.obsidian[i+1] == '`' else jump1
+            jump1 = -jump1 if self.obsidian[i+1:i+4] == '```' else jump1
             # jump if in {}, e.g. admonition
             jump2 = -jump2 if self.obsidian[i+1] == '{' else jump2
             # sep
@@ -94,11 +94,12 @@ class Convert:
                     i += 2
                 else:
                     self.obsidian = self.obsidian[:i+1] + '\n' + self.obsidian[i+1:]
+                    i += 1
             # jump
-            elif jump1 > 0:
-                jump1 = -jump1
-            elif jump2 > 0:
-                jump2 = -jump2
+            #elif jump1 > 0:
+            #    jump1 = -jump1
+            #elif jump2 > 0:
+            #    jump2 = -jump2
 
             i = self.obsidian.find('\n', i+1)
         self.obsidian = re.sub(r"\n```{linenos=true}", r"```", self.obsidian)

@@ -1,10 +1,10 @@
 +++
 draft = false
 
-title = {{title}}
+title = "{{title}}"
 subtitle = ""
-date = {{date}}
-lastmod = {{date}}
+date = "{{date}}"
+lastmod = "{{lastdate}}"
 author = "EFLin"
 
 summary = ""
