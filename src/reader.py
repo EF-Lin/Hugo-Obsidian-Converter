@@ -28,11 +28,15 @@ class Glasses:
             if self.name_num == -1:
                 self.name = self.read_path[i + 1:]
             else:
-                self.name = self.add_filetype(f"{self.read_path[i + 1:i + self.name_num + 1]}")
+                self.name = f"{self.read_path[i + 1:i + self.name_num + 1]}"
 
-        self.name = self.add_filetype(self.name)
-        self.date = self.name[:self.name.find('.')] if self.sep_name else str(datetime.date.today())
-        self.title = self.read_path[len(self.read_path) - self.read_path[::-1].find('-'):len(self.read_path) - 1 - self.read_path[::-1].find('.')] if self.sep_name else "New_file"
+        # self.name = self.add_filetype(self.name)
+        if self.sep_name:
+            self.date = self.name
+            self.title = self.read_path[len(self.read_path) - self.read_path[::-1].find('-'):len(self.read_path) - 1 - self.read_path[::-1].find('.')]
+        else:
+            self.date = str(datetime.date.today())
+            self.title = "New_file"
 
     @staticmethod
     def path_condition(path: str, default: str) -> str:
@@ -54,14 +58,13 @@ class Glasses:
 
     def write_file(self, data: str):
         path = os.path.normpath(f"{self.write_path}/{self.name}")
+        new_path = path
         i = 2
-        while os.path.exists(path):
-            path = path.split('.')
-            path[0] = path[0][:-2] if i > 2 else path[0]
-            path[0] += f"-{i}."
+        while os.path.exists(new_path):
+            new_path = f"{path}-{i}."
             i += 1
-            path = ''.join(path)
-        with open(path, "w+", encoding="utf8") as f:
+        os.makedirs(new_path)
+        with open(os.path.normpath(f"{new_path}\\index.md"), "w+", encoding="utf8") as f:
             f.write(data)
             os.startfile(self.write_path)
 

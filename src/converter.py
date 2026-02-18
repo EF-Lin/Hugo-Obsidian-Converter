@@ -8,23 +8,23 @@ class Convert:
     This object will receive an obsidian-md.readlines list and return a converted hugo-md string.
     """
     obsidian: list
-    pic_path: str = ""
+    img_path: str = ""
     allow_chars = ['<', '!', '[', '#', '-', '{', '(', '-', '\n']
 
     def __post_init__(self):
-        if self.pic_path != "" and self.pic_path[-1] in ['/', '\\'] and len(self.pic_path) > 3:
-            self.pic_path = self.pic_path[0:-1]
+        if self.img_path != "" and self.img_path[-1] in ['/', '\\'] and len(self.img_path) > 3:
+            self.img_path = self.img_path[0:-1]
         self.obsidian: str = ''.join(self.obsidian)
 
     def convert(self, is_delcon=True,
                 is_sep=True,
-                is_pic = True,
+                is_img = True,
                 is_adm = True,
                 is_highlight=True,
                 is_link=True) -> str:
         try:
             self.__del_content() if is_delcon else 0
-            self.__pic() if is_pic else 0
+            self.__img() if is_img else 0
             self.__link() if is_link else 0
             self.__adm() if is_adm else 0
             self.__sep_code() if is_sep else 0
@@ -45,9 +45,9 @@ class Convert:
         # delete content
         self.obsidian = re.sub(r"```table-of-contents.*?```", "", self.obsidian, flags=re.DOTALL)
 
-    def __pic(self):
+    def __img(self):
         # replace pic link
-        self.obsidian = re.sub(r"!\[\[(.*?)\.(.*?)\]\]", r"![\1](" + self.pic_path + r'/\1.\2 "\1")', self.obsidian)
+        self.obsidian = re.sub(r"!\[\[(.*?)\.(.*?)\]\]", r"![\1](" + self.img_path + r'/\1.\2 "\1")', self.obsidian)
 
     def __link(self):
         # replace link, two formats

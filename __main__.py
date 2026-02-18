@@ -7,7 +7,7 @@ from rich import print
 parser = argparse.ArgumentParser()
 parser.add_argument("read_path")
 parser.add_argument("write_path")
-# parser.add_argument("pic_path")
+# parser.add_argument("img_path")
 args = parser.parse_args()
 
 try:
@@ -17,9 +17,10 @@ try:
     c = Convert(obsidian=file)
     data = c.convert()
     h = Head(main_data=data, date=g.date, title=g.title)
+    # , temp="temp_bug.md"
     data = h.add_head()
     g.write_file(data)
-    print("\n[red]WARNING [[ file#title ]] link" if c.scan(data) is True else "\n")
-    print("[green]INFO: convert successful")
+    print("\n[red]WARNING [[ file#title ]] link" if c.scan(data) is True else "")
+    print("[green]INFO: convert successful\n")
 except Exception as ex:
     print(f"[red]ERROR: {ex}")
